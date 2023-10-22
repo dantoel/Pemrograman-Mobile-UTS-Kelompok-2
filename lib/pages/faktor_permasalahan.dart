@@ -1,5 +1,68 @@
 import 'package:charts_flutter_new/flutter.dart' as charts;
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart'; ///import package dio
+
+//deklarasi variabel
+final dio = Dio();
+
+var all_data = [];
+
+//url untuk get api
+String url_domain = "http://192.168.0.106:8000/";
+String url_all_data = url_domain + "api/all_data";
+String url_count_genre = url_domain + "api/count_genre";
+String url_show_data = url_domain + "api/show_data";
+
+
+class data_tes extends StatefulWidget {
+  const data_tes({super.key});
+  @override
+  State<data_tes> createState() => _data_tesState();
+}
+
+class _data_tesState extends State<data_tes> with WidgetsBindingObserver {
+  void initState() {
+    super.initState();
+    show_all_data();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+//reload pada data tabel yang sudah kita buat
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('MyApp state = $state');
+    if (state == AppLifecycleState.inactive) {
+      // app transitioning to other state.
+    } else if (state == AppLifecycleState.paused) {
+      // app is on the background.
+    } else if (state == AppLifecycleState.detached) {
+      // flutter engine is running but detached from views
+    } else if (state == AppLifecycleState.resumed) {
+      // app is visible and running.
+      runApp(MyApp()); // run your App class again
+    }
+  }
+
+    void count_genre(Genre genre) async {
+    try {
+      Response response = await dio.post(count_genre);
+      if (response.statusCode == 200) {
+        count_genre = response.data;
+      } else {
+        // Tindakan lain jika status code bukan 200
+      }
+    } catch (e) {
+      // Tangani pengecualian DioException di sini
+      print("Error: $e");
+    }
+  }
+
 
 class MyData {
   final String name;
