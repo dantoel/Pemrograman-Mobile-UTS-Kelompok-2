@@ -1,9 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
 import 'faktor_permasalahan.dart';
 import 'lihat_detail.dart';
 import 'total_responden_gender.dart';
 import 'total_responden_negara.dart';
+
+final dio = Dio();
+
+var all_data = [];
+
+String url_domain = "http://192.168.100.19:8000/";
+String url_all_data = url_domain + "api/all_data";
+String url_create_data = url_domain + "api/create_data";
+String url_show_data = url_domain + "api/show_data";
+String url_update_data = url_domain + "api/edit_data";
+String url_delete_data = url_domain + "api/delete_data";
+
+@override
+void initState() {
+  initState();
+  fetchDataFromApi();
+}
+
+Future<void> fetchDataFromApi() async {
+  try {
+    final response =
+        await Dio().post("https://192.168.2.37:8000/count_responden");
+    if (response.statusCode == 200) {
+      final responseData = response.data;
+      setState(() {
+        totalResponden = responseData['total_responden'];
+      });
+    } else {
+      // Handle error jika status code bukan 200
+      print('Gagal mengambil data dari API');
+    }
+  } catch (e) {
+    // Handle error lainnya, misalnya masalah jaringan
+    print('Terjadi kesalahan: $e');
+  }
+}
 
 class HomePage extends StatelessWidget {
   @override
