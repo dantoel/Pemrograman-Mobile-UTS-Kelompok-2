@@ -8,30 +8,42 @@ import 'total_responden_negara.dart';
 
 final dio = Dio();
 
-var all_data = [];
-
 String url_domain = "http://192.168.100.19:8000/";
-String url_all_data = url_domain + "api/all_data";
+String url_count_responden = url_domain + "api/count_responden";
 String url_create_data = url_domain + "api/create_data";
 String url_show_data = url_domain + "api/show_data";
-String url_update_data = url_domain + "api/edit_data";
-String url_delete_data = url_domain + "api/delete_data";
+var totalResponden;
+
+class YourWidget extends StatefulWidget {
+  @override
+  _YourWidgetState createState() => _YourWidgetState();
+}
+
+class _YourWidgetState extends State<YourWidget> {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
+}
 
 @override
 void initState() {
   initState();
-  fetchDataFromApi();
+  HitungResponden();
 }
 
-Future<void> fetchDataFromApi() async {
+void HitungResponden() async {
   try {
-    final response =
-        await Dio().post("https://192.168.2.37:8000/count_responden");
+    Response response = await dio.post(url_count_responden);
     if (response.statusCode == 200) {
-      final responseData = response.data;
-      setState(() {
-        totalResponden = responseData['total_responden'];
-      });
+      totalResponden = response.data;
+      if (response.data.containsKey(url_count_responden)) {
+        totalResponden = response.data[url_count_responden];
+      } else {
+        // Jika 'count_responden' tidak ditemukan dalam respons
+        print('Properti "count_responden" tidak ditemukan dalam respons API');
+      }
     } else {
       // Handle error jika status code bukan 200
       print('Gagal mengambil data dari API');
@@ -151,7 +163,7 @@ class HomePage extends StatelessWidget {
                                       Expanded(
                                         child: Center(
                                           child: Text(
-                                            "1005",
+                                            totalResponden.toString(),
                                             style: TextStyle(
                                               color: Colors.blue[800],
                                               fontWeight: FontWeight.w800,
